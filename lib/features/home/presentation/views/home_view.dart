@@ -17,16 +17,6 @@ final HomeController controller = Get.put(HomeController());
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    // Grouping the data by tblName
-    Map<String, List<GetCompany>> groupedData = {};
-    for (var item in controller.data) {
-      if (groupedData.containsKey(item.tblName)) {
-        groupedData[item.tblName]!.add(item);
-      } else {
-        groupedData[item.tblName.toString()] = [item];
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.black.withOpacity(0.8),
@@ -35,7 +25,7 @@ class _HomeViewState extends State<HomeView> {
           children: [
             // Profile Image
             Container(
-              padding: EdgeInsets.all(3),
+              padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 color: AppColors.yellow, // Background color
                 borderRadius: BorderRadius.circular(30), // Rounded corners
@@ -58,13 +48,12 @@ class _HomeViewState extends State<HomeView> {
             // Logout Button
             TextButton(
               onPressed: () {
-                // Handle logout action
                 _showLogoutDialog(context);
               },
               child: const Icon(
-                Icons.logout, // Use the appropriate logout icon
+                Icons.logout,
                 color: Colors.white,
-                size: 24, // Adjust size as needed
+                size: 24,
               ),
             ),
           ],
@@ -72,34 +61,29 @@ class _HomeViewState extends State<HomeView> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          // Show loading indicator
           return const Center(
-              child: const CircularProgressIndicator(
-            color: AppColors.primaryColor,
-          ));
+            child: CircularProgressIndicator(
+              color: AppColors.primaryColor,
+            ),
+          );
         }
-        Map<String, List<GetCompany>> groupedData = {};
-        for (var item in controller.data) {
-          if (groupedData.containsKey(item.tblName)) {
-            groupedData[item.tblName]!.add(item);
-          } else {
-            groupedData[item.tblName.toString()] = [item];
-          }
-        }
+
+        // Filter only GroupTotals
+        List<GetCompany> groupTotalsItems = controller.data
+            .where((item) => item.tblName == 'GroupTotals')
+            .toList();
+
         return ListView.builder(
           padding: const EdgeInsets.all(8.0),
-          itemCount: groupedData.keys.length,
+          itemCount: 1, // Only 1 group (GroupTotals)
           itemBuilder: (context, index) {
-            String tblName = groupedData.keys.elementAt(index);
-            List<GetCompany> items = groupedData[tblName]!;
-
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    tblName,
+                    'GroupTotals',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -111,14 +95,14 @@ class _HomeViewState extends State<HomeView> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // Number of columns
+                    crossAxisCount: 2,
                     crossAxisSpacing: 8.0,
                     mainAxisSpacing: 8.0,
-                    childAspectRatio: 2, // Adjust the height of each grid item
+                    childAspectRatio: 2,
                   ),
-                  itemCount: items.length,
+                  itemCount: groupTotalsItems.length,
                   itemBuilder: (context, itemIndex) {
-                    final item = items[itemIndex];
+                    final item = groupTotalsItems[itemIndex];
                     return Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -128,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           gradient: LinearGradient(
-                            colors: _getGradientColors(tblName),
+                            colors: _getGradientColors(item.type.toString()),
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -168,17 +152,16 @@ class _HomeViewState extends State<HomeView> {
 
   List<Color> _getGradientColors(String tblName) {
     Map<String, List<Color>> gradients = {
-      'GroupTotals': [Colors.blue, Colors.blueAccent],
-      'TotalMonthly': [Colors.orange, Colors.deepOrangeAccent],
-      'DocumentStatus': [Colors.pink, Colors.redAccent],
-      'DocumentTypes': [Colors.green, Colors.lightGreen],
+      'Invalid': [Colors.blue, Colors.blueAccent],
+      'Submitted': [Colors.orange, Colors.deepOrangeAccent],
+      // 'DocumentStatus': [Colors.pink, Colors.redAccent],
+      // 'DocumentTypes': [Colors.green, Colors.lightGreen],
     };
 
     // Return default gradient if tblName is not found
     return gradients[tblName] ?? [Colors.grey, Colors.black54];
   }
 
-  // Show a dialog to confirm logout
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -189,7 +172,6 @@ class _HomeViewState extends State<HomeView> {
           actions: [
             TextButton(
               onPressed: () {
-                // Implement logout functionality here
                 controller.logout();
               },
               child: const Text('Yes'),

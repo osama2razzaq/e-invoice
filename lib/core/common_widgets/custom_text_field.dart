@@ -123,7 +123,7 @@ class CustomTextField extends StatelessWidget {
         _passwordVisible.value = !value;
       },
       icon: Icon(
-        value == true ? Icons.visibility : Icons.visibility_off, // Toggle icon
+        value == true ? Icons.visibility_off : Icons.visibility, // Toggle icon
         color: Colors.grey,
       ),
     );
