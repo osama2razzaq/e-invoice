@@ -1,0 +1,54 @@
+name: e_invoice
+description: ""
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.3 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  get: ^4.6.6
+  http: ^1.2.1
+  shared_preferences: ^2.3.1
+  intl: ^0.19.0
+  
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/fonts/
+    - assets/icons/
+    
+  fonts:
+    - family: Prompt
+      fonts:
+        - asset: assets/fonts/Prompt-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Prompt-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Prompt-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Prompt-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Prompt-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Prompt-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Prompt-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Prompt-SemiBold.ttf
+          weight: 600

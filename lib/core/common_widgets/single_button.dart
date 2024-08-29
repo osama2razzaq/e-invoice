@@ -1,0 +1,68 @@
+import 'package:e_invoice/core/values/app_colors.dart';
+import 'package:e_invoice/core/values/app_text_style.dart';
+import 'package:e_invoice/core/values/app_values.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+
+import 'form_loader.dart';
+
+class SingleButton extends StatelessWidget {
+  final String buttonName;
+  final String? iconPath;
+  final Color? bgColor;
+  final Color? iconColor;
+  final double? width;
+  final EdgeInsetsGeometry? margin;
+  final void Function()? onTap;
+  final bool isEnabled;
+  final bool isLoading;
+
+  ///Default button customized with the design of our app
+  const SingleButton({
+    required this.buttonName,
+    required this.onTap,
+    Key? key,
+    this.isEnabled = true,
+    this.isLoading = false,
+    this.bgColor = AppColors.primaryColor,
+    this.iconColor,
+    this.margin,
+    this.iconPath,
+    this.width,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: margin,
+      height: AppValues.maxButtonHeight,
+      width: width ?? Get.width / 1.8,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(20), // Adjust if needed
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              shape: const StadiumBorder()),
+          onPressed: isEnabled && !isLoading ? onTap : null,
+          child: isLoading
+              ? const FormLoader()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      buttonName,
+                      style: PromptStyle.buttonSubTitleTextStyle,
+                    ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+}
