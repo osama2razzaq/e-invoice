@@ -48,7 +48,7 @@ class LoginView extends StatelessWidget with SnackBarHelper {
             height: deviceHeight / 2,
             width: deviceWidth,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
+              color: Color(0xFF212632),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20.0),
                 bottomRight: Radius.circular(20.0),
@@ -75,7 +75,7 @@ class LoginView extends StatelessWidget with SnackBarHelper {
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.8),
+                    color: Color(0xFF212632),
 
                     offset: const Offset(0, 0), // x and y offset
                     blurRadius: 10, // Blur radius

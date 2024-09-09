@@ -40,7 +40,7 @@ class SingleButton extends StatelessWidget {
       width: width ?? Get.width / 1.8,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
+          color: Color(0xFF212632),
           borderRadius: BorderRadius.circular(20), // Adjust if needed
         ),
         child: ElevatedButton(

@@ -19,24 +19,21 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.black.withOpacity(0.8),
+        backgroundColor: Color(0xFF212632),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Profile Image
             Container(
               padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
-                color: AppColors.yellow, // Background color
-                borderRadius: BorderRadius.circular(30), // Rounded corners
+                color: AppColors.yellow,
+                borderRadius: BorderRadius.circular(30),
               ),
               child: const CircleAvatar(
-                radius: 20, // Adjust size as needed
-                backgroundImage: AssetImage(
-                    'assets/images/profileImage.png'), // Replace with your image asset
+                radius: 20,
+                backgroundImage: AssetImage('assets/images/profileImage.png'),
               ),
             ),
-            // Center title
             Expanded(
               child: Center(
                 child: Text(
@@ -45,7 +42,6 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
-            // Logout Button
             TextButton(
               onPressed: () {
                 _showLogoutDialog(context);
@@ -68,98 +64,113 @@ class _HomeViewState extends State<HomeView> {
           );
         }
 
-        // Filter only GroupTotals
-        List<GetCompany> groupTotalsItems = controller.data
-            .where((item) => item.tblName == 'GroupTotals')
-            .toList();
+        // Hardcoded values if null
+        int cleared = controller.data
+                .firstWhere((item) => item.type == 'Cleared',
+                    orElse: () => GetCompany(type: 'Cleared', total: 0))
+                .total ??
+            0;
+        int rejected = controller.data
+                .firstWhere((item) => item.type == 'Rejected',
+                    orElse: () => GetCompany(type: 'Rejected', total: 0))
+                .total ??
+            0;
+        int cancelled = controller.data
+                .firstWhere((item) => item.type == 'Cancelled',
+                    orElse: () => GetCompany(type: 'Cancelled', total: 0))
+                .total ??
+            0;
+        int submitted = controller.data
+                .firstWhere((item) => item.type == 'Submitted',
+                    orElse: () => GetCompany(type: 'Submitted', total: 0))
+                .total ??
+            0;
+        int invalid = controller.data
+                .firstWhere((item) => item.type == 'Invalid',
+                    orElse: () => GetCompany(type: 'Invalid', total: 0))
+                .total ??
+            0;
+        int total = controller.data
+                .firstWhere((item) => item.type == 'Total',
+                    orElse: () => GetCompany(type: 'Total', total: 0))
+                .total ??
+            0;
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: 1, // Only 1 group (GroupTotals)
-          itemBuilder: (context, index) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    'GroupTotals',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8.0,
-                    mainAxisSpacing: 8.0,
-                    childAspectRatio: 2,
-                  ),
-                  itemCount: groupTotalsItems.length,
-                  itemBuilder: (context, itemIndex) {
-                    final item = groupTotalsItems[itemIndex];
-                    return Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: LinearGradient(
-                            colors: _getGradientColors(item.type.toString()),
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item.type.toString(),
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Total: ${item.total}',
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            );
-          },
+        return Padding(
+          padding: EdgeInsets.all(8.0),
+          child: GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+            childAspectRatio: 1,
+            children: [
+              _buildStatusCard('Total', total, Color(0xFF3399FD), Icons.people),
+              _buildStatusCard('Cleared', cleared, Color(0xFF189E3E),
+                  Icons.person_add_alt_1),
+              _buildStatusCard('Rejected', rejected, Color(0xFFF8B111),
+                  Icons.shopping_basket),
+              _buildStatusCard(
+                  'Cancelled', cancelled, Color(0xFF5756D4), Icons.chat_bubble),
+              _buildStatusCard(
+                  'Submitted', submitted, Color(0xFFE55354), Icons.speed),
+              _buildStatusCard(
+                  'Invalid', invalid, Color(0xFF212632), Icons.pie_chart),
+            ],
+          ),
         );
       }),
     );
   }
 
-  List<Color> _getGradientColors(String tblName) {
-    Map<String, List<Color>> gradients = {
-      'Invalid': [Colors.blue, Colors.blueAccent],
-      'Submitted': [Colors.orange, Colors.deepOrangeAccent],
-      // 'DocumentStatus': [Colors.pink, Colors.redAccent],
-      // 'DocumentTypes': [Colors.green, Colors.lightGreen],
-    };
-
-    // Return default gradient if tblName is not found
-    return gradients[tblName] ?? [Colors.grey, Colors.black54];
+  Widget _buildStatusCard(String label, int count, Color color, IconData icon) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: color,
+        ),
+        padding: const EdgeInsets.all(10.0),
+        child: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '$count',
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ],
+            ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Icon(
+                icon,
+                size: 30, // Adjust the size as per your requirement
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showLogoutDialog(BuildContext context) {

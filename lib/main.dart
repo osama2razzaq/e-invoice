@@ -31,9 +31,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor:
-          Colors.black.withOpacity(0.8), // Set your desired color here
-    ));
+        statusBarColor: Color(0xFF212632) // Set your desired color here
+        ));
 
     return GetMaterialApp(
       title: '',
